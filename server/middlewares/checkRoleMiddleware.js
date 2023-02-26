@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken')
+// Всё до этой строчки - подгрузка модулей и файлов JS
 
 module.exports = function (role){
     return function (req, res, next) {
@@ -20,4 +21,4 @@ module.exports = function (role){
             res.status(401).json({message: 'Пользователь не авторизован!'})
         }
     }
-}
+} // Пока что нереализованная функция проверки на роль (будет использоваться для админ-панели)

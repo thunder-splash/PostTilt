@@ -18,4 +18,4 @@ class ApiError extends Error{
     }
 }
 
-module.exports = ApiError
+module.exports = ApiError // Вспомогательная библиотека с ошибками - в будущем планируется использовать уже готовую и с большим количеством ошибок, но пока что ио этого хватит

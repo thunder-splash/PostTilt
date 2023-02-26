@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken')
+// Всё до этой строчки - подгрузка модулей и файлов JS
 
 module.exports = function (req, res, next) {
     if (req.method === "OPTIONS") {
@@ -15,4 +16,4 @@ module.exports = function (req, res, next) {
     } catch (e) {
         res.status(401).json({message: 'Пользователь не авторизован!'})
     }
-}
+} // Проверка пользователя на жизнеспособность его jwt-tokena, фактически - проверка подписи

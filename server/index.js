@@ -6,18 +6,19 @@ const fileUpload = require('express-fileupload')
 const router = require ('./routes/index')
 const errorHandler = require ('./middlewares/ErrorHandlingMiddleware')
 const path = require('path')
+// Всё до этой строчки - подгрузка модулей и файлов JS
 
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 5000 // в .env - конфиг номера порта для быстрой замены, либо используется 5000 порт
 
-const app = express()
-app.use(cors())
-app.use(express.json())
-app.use(express.static(path.resolve(__dirname, 'static')))
-app.use(fileUpload({}))
-app.use('/api', router)
+const app = express() //создаём объект app при помощи фреймворка express.js
+app.use(cors()) // Cross-Origin Resource Sharing (CORS) — механизм, использующий дополнительные HTTP-заголовки, чтобы дать возможность агенту пользователя получать разрешения на доступ к выбранным ресурсам с сервера на источнике (домене)
+app.use(express.json()) // Функция express.json() — это встроенная промежуточная функция в Express. Он анализирует входящие запросы с полезными данными JSON и основан на body-parser
+app.use(express.static(path.resolve(__dirname, 'static'))) // Тоже функция фреймворка express, но пока нигде не используется, нужна для подгрузки статики (картинок) на сервер
+app.use(fileUpload({})) // Тоже нереализованная штука, задел на будущее
+app.use('/api', router) // указатель на роутер
 
-// Обработка ошибок, последний Middleware
-app.use(errorHandler)
+
+app.use(errorHandler) // Обработка ошибок, последний Middleware
 
 const start = async () => {
     try {
