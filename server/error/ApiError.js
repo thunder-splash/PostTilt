@@ -1,21 +1,31 @@
-class ApiError extends Error{
-    constructor(status, message) {
+class ApiError extends Error {
+    constructor(status, message, details = null) {
         super();
-        this.status = status
-        this.message = message
+        this.status = status;
+        this.message = message;
+        this.details = details;
+        Error.captureStackTrace(this, this.constructor);
     }
 
-    static badRequest(message){
-        return new ApiError(404, message)
+    static badRequest(message, details = null) {
+        return new ApiError(400, message, details);
     }
 
-    static internal(message){
-        return new ApiError(500, message)
+    static unauthorized(message, details = null) {
+        return new ApiError(401, message, details);
     }
 
-    static forbidden(message){
-        return new ApiError(403, message)
+    static forbidden(message, details = null) {
+        return new ApiError(403, message, details);
+    }
+
+    static notFound(message, details = null) {
+        return new ApiError(404, message, details);
+    }
+
+    static internal(message, details = null) {
+        return new ApiError(500, message, details);
     }
 }
 
-module.exports = ApiError // Вспомогательная библиотека с ошибками - в будущем планируется использовать уже готовую и с большим количеством ошибок, но пока что ио этого хватит
+module.exports = ApiError;
