@@ -2,7 +2,6 @@ const ApiError = require('../error/ApiError')
 const bcrypt = require('bcrypt')
 const {User} = require('../models/models')
 const jwt = require('jsonwebtoken')
-//const {passwordSchema, emailSchema} = require ('./joiValidate')
 // Всё до этой строчки - подгрузка модулей и файлов JS
 
 const generateJwt = (id, email, role) => {
@@ -17,19 +16,11 @@ class UserController {
     async registration(req, res, next) {
         try {
             const { email, password, role } = req.body
-            const passwordRegex = '/^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$/'
-            const emailRegex = '/^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}$/'
+            const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/
+            const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/
             if (!emailRegex.test(email) || !passwordRegex.test(password)) {
                 return next(ApiError.badRequest('Некорректный формат почты или пароля!'));
             }
-            //const { err1 } = emailSchema.validate({ email: { email } })
-            //if (err1) {
-            //    throw new next(ApiError.badRequest(err1.details[0].message))
-            //}
-            //const { err2 } = passwordSchema.validate({ password : { password } })
-            //if (err2){
-            //    throw new next(ApiError.badRequest(err2.details[0].message))
-            //}
             const candidate = await User.findOne({ where: { email } })
             if (candidate) {
                 throw new next(ApiError.badRequest('Пользователь с таким почтовым адесом уже существует'))
