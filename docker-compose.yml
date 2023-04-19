@@ -1,0 +1,31 @@
+version: '2'
+services:
+  server:
+    build: .
+    environment:
+      DB_HOST: base
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: postgres
+    depends_on:
+      - base
+  base: 
+    image: postgres:13
+    environment:
+      - "POSTGRES_USER=postgres"
+      - "POSTGRES_PASSWORD=postgres"
+      - "POSTGRES_DB=postgres"
+      - "POSTGRES_PORT=5432"
+  nginx:
+    image: nginx:1.23.2
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/templates/default.conf.template
+    depends_on:
+      - server
+    environment:
+      PROXY_HOST: localhost
+
