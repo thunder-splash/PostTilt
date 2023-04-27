@@ -6,7 +6,7 @@ services:
       DB_HOST: base
       DB_PORT: 5432
       DB_USER: postgres
-      DB_PASSWORD: postgres
+      DB_PASSWORD: 1234
       DB_NAME: postgres
     depends_on:
       - base
@@ -14,7 +14,7 @@ services:
     image: postgres:13
     environment:
       - "POSTGRES_USER=postgres"
-      - "POSTGRES_PASSWORD=postgres"
+      - "POSTGRES_PASSWORD=1234"
       - "POSTGRES_DB=postgres"
       - "POSTGRES_PORT=5432"
   nginx:
