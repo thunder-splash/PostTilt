@@ -4,7 +4,7 @@ services:
     build: .
     environment:
       DB_HOST: base
-      DB_PORT: 5433
+      DB_PORT: 5432
       DB_USER: postgres
       DB_PASSWORD: 1234
       DB_NAME: postgres
@@ -16,7 +16,7 @@ services:
       - "POSTGRES_USER=postgres"
       - "POSTGRES_PASSWORD=1234"
       - "POSTGRES_DB=postgres"
-      - "POSTGRES_PORT=5433"
+      - "POSTGRES_PORT=5432"
   nginx:
     image: nginx:1.23.2
     restart: always
