@@ -5,11 +5,11 @@ const {INTEGER, STRING, BOOLEAN} = require('sequelize')
 const User = sequelize.define ('user', {
     id: {type: INTEGER, autoIncrement: true, primaryKey: true},
     name: {type: STRING, defaultValue: "Иванов Иван Иванович"},
-    email: {type: STRING, unique: true},
+    email: {type: STRING, unique: true, allowNull: false},
     password: {type: STRING, allowNull: false},
     role: {type: STRING, defaultValue: "USER"},
-    activity: {type: BOOLEAN, defaultValue: true}
-
+    activity: {type: BOOLEAN, defaultValue: true},
+    sex: {type: BOOLEAN, allowNull: false},
 }) // Описание первого объекта (собственно - модели БД (слишком долго объяснять и мне лень) Вкратце - заготовки для ORM, чтобы она просто пришла, сделала нужные запросы на создание с нужными параметрами и БД уже была готова на запись)
 
 const Basket = sequelize.define ('basket', {

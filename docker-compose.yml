@@ -3,6 +3,7 @@ services:
   server:
     build: .
     environment:
+      SECRET_KEY: kekwjhkl4lk23j4kl23jkh4kjh23k4jh23kuf8usd98f
       DB_HOST: base
       DB_PORT: 5432
       DB_USER: postgres
@@ -11,7 +12,7 @@ services:
     depends_on:
       - base
   base: 
-    image: postgres:13
+    image: postgres:15
     environment:
       - "POSTGRES_USER=postgres"
       - "POSTGRES_PASSWORD=1234"

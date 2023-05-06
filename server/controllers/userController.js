@@ -15,7 +15,7 @@ const generateJwt = (id, email, role) => {
 class UserController {
     async registration(req, res, next) {
         try {
-            const { email, password, role } = req.body
+            const { email, password, role,  sex, name } = req.body
             const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/
             const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/
             if (!emailRegex.test(email) || !passwordRegex.test(password)) {
@@ -26,13 +26,13 @@ class UserController {
                 throw new next(ApiError.badRequest('Пользователь с таким почтовым адесом уже существует'))
             }
             const hashPassword = await bcrypt.hash(password, 5)
-            const user = await User.create({email, password: hashPassword, role})
+            const user = await User.create({email, password: hashPassword, role, sex, name})
             const token = generateJwt(user.id, user.email, user.role)
             return res.json({token})
         } catch (e) {
             new next(ApiError.internal(e.message))
         }
-    } // API для регистрации, фактически это и всё ниже - логика сервера
+    }
 
     async login(req, res, next) {
         try{
@@ -85,21 +85,57 @@ class UserController {
 
     async getOne (req, res, next) {
         try{
-            const { id } = req.params
-            const ref = await User.findOne({ where: { id: { id }} })
+            const ref = await User.findOne({
+                where: { id: req.params.id
+                }
+            })
             return res.json(ref)
         } catch (e) {
             new next(ApiError.internal(e.message))
         }
     }
 
+    async getMyPage (req, res, next) {
+        try{
+            const token = req.headers.authorization.split(' ')[1];
+            const decoded = jwt.verify(token, process.env.SECRET_KEY);
+            const ref = await User.findOne({
+                where: { id: decoded.id
+                }
+            })
+            return res.json(ref)
+        }
+        catch (e) {
+            new next(ApiError.internal(e.message));
+        }
+    }
+
     async update(req, res, next) {
-        const { id } = req.params;
-        const { name } = req.body;
         try {
-            const updatedUser = await User.update({ name }, { where: { id } });
+            const { field, conditionField, conditionValue } = req.params;
+            let valueToUpdate = req.body[field];
+
+            console.log(`Updating user with ${conditionField} = ${conditionValue}`);
+            console.log(`Setting ${field} to ${valueToUpdate}`);
+
+            if (field === 'email') {
+                const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
+                if (!emailRegex.test(valueToUpdate)) {
+                    return new next(ApiError.badRequest('Неверный формат электронной почты'));
+                }
+            }
+
+            if (field === 'password') {
+                const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/
+                if (!passwordRegex.test(valueToUpdate)) {
+                    return new next(ApiError.badRequest('Неверный формат пароля'));
+                }
+                valueToUpdate = await bcrypt.hash(valueToUpdate, 5);
+            }
+
+            const updatedUser = await User.update({ [field]: valueToUpdate }, { where: { [conditionField]: conditionValue } });
             if (updatedUser[0] === 0) {
-                return new next(ApiError.notFound(`Пользователь с id = ${id} не найден`));
+                return new next(ApiError.notFound(`Пользователь с ${conditionField} = ${conditionValue} не найден`));
             }
             res.json('Параметры пользователя заменены успешно');
         } catch (e) {
